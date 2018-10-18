@@ -39,6 +39,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_hal.h"
+#include "dma.h"
 #include "i2c.h"
 #include "usart.h"
 #include "gpio.h"
@@ -115,6 +116,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
@@ -137,11 +139,18 @@ int main(void)
       pi=&i;
       message_len=1;
 
-      while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 1, HAL_MAX_DELAY) != HAL_OK);
-      HAL_I2C_Mem_Write(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pi,message_len, HAL_MAX_DELAY);
+      // while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 1, HAL_MAX_DELAY) != HAL_OK);
+      // HAL_I2C_Mem_Write(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pi,message_len, HAL_MAX_DELAY);
 
-      while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 1, HAL_MAX_DELAY) != HAL_OK);
-      HAL_I2C_Mem_Read(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pread_buffer,message_len, HAL_MAX_DELAY);
+      // while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 1, HAL_MAX_DELAY) != HAL_OK);
+      // HAL_I2C_Mem_Read(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pread_buffer,message_len, HAL_MAX_DELAY);
+
+
+      // while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 10, HAL_MAX_DELAY) != HAL_OK);
+      // HAL_I2C_Mem_Write_DMA(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pi,message_len);
+
+      while(HAL_I2C_IsDeviceReady(&hi2c1, test_device_addr, 10, HAL_MAX_DELAY) != HAL_OK);
+      HAL_I2C_Mem_Read_DMA(&hi2c1, test_device_addr, test_store_addr, I2C_MEMADD_SIZE_8BIT, (uint8_t*)pread_buffer,message_len);
 
       HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
